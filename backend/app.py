@@ -20,6 +20,9 @@ def load_hashes():
 KNOWN_HASHES = load_hashes()
 print(f"Wczytano {len(KNOWN_HASHES)} hashy z {HASHES_FILE}", flush=True)
 
+@app.get("/health")
+def health():
+    return jsonify({"status": "ok"})
     
 @app.post("/check")
 def check():
@@ -35,7 +38,7 @@ def check():
 
     found = h in KNOWN_HASHES
     return jsonify({"found": found})
-    
+
 
 if __name__ == "__main__":
     # 0.0.0.0 = nasłuchuj na wszystkich interfejsach kontenera, nie tylko na jego localhost
