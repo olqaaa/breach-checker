@@ -2,9 +2,10 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "8080:80"          # jedyny port opublikowany na hoście
+      - "8080:80"
     depends_on:
-      - backend            # nginx przy starcie musi znaleźć nazwę backend
+      backend:
+        condition: service_healthy
 
   backend:
     build: ./backend
@@ -16,6 +17,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   db:
     image: postgres:16-alpine
